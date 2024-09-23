@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from itertools import chain
 from typing import Any, Dict, Optional, Sequence, Tuple
 
 
@@ -32,12 +33,17 @@ class Module:
     def train(self) -> None:
         """Set the mode of this module and all descendent modules to `train`."""
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        self.training = True
+        m: list[Module] = self.__dict__["_modules"].values()
+        list(map(lambda mod: mod.train(), m))
+
 
     def eval(self) -> None:
         """Set the mode of this module and all descendent modules to `eval`."""
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        self.training = False
+        m: list[Module] = self.__dict__["_modules"].values()
+        list(map(lambda mod: mod.eval(), m))
 
     def named_parameters(self) -> Sequence[Tuple[str, Parameter]]:
         """Collect all the parameters of this module and its descendents.
@@ -48,12 +54,22 @@ class Module:
 
         """
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        p: Dict[str, Parameter] = self.__dict__["_parameters"]
+        params = list(p.items())
+        # Recursively collect parameters from child modules
+        descendants_params = list(chain.from_iterable(
+            map(lambda m: [(m[0] + "." + name, param) for name, param in m[1].named_parameters()],
+                self.__dict__["_modules"].items())
+        ))
+        return params + descendants_params
+            
 
     def parameters(self) -> Sequence[Parameter]:
         """Enumerate over all the parameters of this module and its descendents."""
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        p: list[Parameter] = self.__dict__["_parameters"].values()
+        descendants_params = list(chain.from_iterable(map(lambda m: m.parameters(),  self.__dict__["_modules"].values())))
+        return list(p) + (descendants_params)
 
     def add_parameter(self, k: str, v: Any) -> Parameter:
         """Manually add a parameter. Useful helper for scalar parameters.

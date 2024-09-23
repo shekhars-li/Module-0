@@ -1,9 +1,10 @@
 """Collection of the core mathematical operators used throughout the code base."""
 
+from functools import reduce
 import math
 
 # ## Task 0.1
-from typing import Callable, Iterable
+from typing import Callable, Iterable, List
 
 #
 # Implementation of a prelude of elementary functions.
@@ -34,6 +35,53 @@ from typing import Callable, Iterable
 
 # TODO: Implement for Task 0.1.
 
+def mul(x: float, y: float) -> float:
+    return x*y
+
+def id(a: float) -> float:
+    return a
+
+def add(a: float, b: float) -> float:
+    return a+b
+
+def neg(a: float) -> float:
+    return -a
+
+def lt(a: float, b: float) -> bool:
+    return a < b
+
+def eq(a: float, b: float) -> bool:
+    return a == b
+
+def max(a: float, b: float) -> float:
+    return a if a > b else b
+
+def is_close(a: float, b: float) -> bool:
+    return (a - b) < 1e-2 if a > b else (b - a) < 1e-2 
+                                    
+def sigmoid(a: float) -> float:
+    return 1.0/(1.0 + math.exp(-a)) if a >=0 else math.exp(a)/(1.0 + math.exp(a))
+
+def relu(a: float) -> float:
+    return max(0, a)
+
+def log(a: float) -> float:
+    return math.log(a)
+
+def exp(a: float) -> float:
+    return math.exp(a) 
+
+def inv(a: float) -> float:
+    return 1/a 
+
+def inv_back(a: float, b: float) -> float:
+    return -b/a**2 
+
+def log_back(a: float, b: float) -> float:
+    return b/a
+
+def relu_back(a: float, b: float) -> float:
+    return 0 if a < 0 else b
 
 # ## Task 0.3
 
@@ -49,6 +97,16 @@ from typing import Callable, Iterable
 # - addLists : add two lists together
 # - sum: sum lists
 # - prod: take the product of lists
+def negList(a: List[float]) -> List[float]:
+    return [-x for x in a]
 
+def addLists(a: List[float], b: List[float]) -> List[float]:
+    return [x + y for x,y in zip(a, b)]
+
+def sum(a: List[float]) -> float:
+    return reduce(lambda x, y: x + y, a) if a else 0
+
+def prod(a: List[float]):
+    return reduce(lambda x, y: x * y, a) if a else 0
 
 # TODO: Implement for Task 0.3.
